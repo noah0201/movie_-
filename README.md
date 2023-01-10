@@ -1,70 +1,35 @@
-# Getting Started with Create React App
+# 关于React-hook的一个小项目
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 查询电影小项目
 
-## Available Scripts
+-- Header.jsx组件
+    存放页面顶部大标题，用于组件就是增加代码的复用性
 
-In the project directory, you can run:
+-- Movie.jsx组件
+    负责展示我们电影，结构是展示电影标题加电影图片加年份
+    我们通过App.js中传入数据到组件中进行排版
 
-### `npm start`
+    const poster=movie.Poster==='N/A'?DEFAULT_PLACEHOLDER_IMAGE:movie.Poster
+    注：此处我们进行判断数据中的Poster值的图片链接是否失效或者不存在，不存在我们就用我们自己提供的图片素材替换，存在我们就存入
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+-- Search.jsx组件
+    页面结构，搜索框和搜索按钮
+    我们用到了React的hook，useState
+    const [searchValue, setSearchValue] = useState("");
+    这里我们作用是进行搜索框的值进行改变
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+    handleSearchInputChanges函数 处理搜索框进行输入配合useState使用
+    resetInputField函数搜索完负责清空
+    callSearchFunction函数配合props使用，将搜索框的内容与后台API进行信息匹配从而得到它
 
-### `npm test`
+-- App.js组件
+    页面结构调用组件，分为头部，搜索栏，还有呈现每部电影
+    电影中进行判断，loading状态存在和不存在错误时进入加载页面，反之进入判断错误信息，然后再嵌套判断，错误是否存在，存在就呈现错误页面，不存在错误就呈现通过api查找到的电影进行循环遍历出来
+    该项目难点都在这，我们用了两种写法
+      第一种：通过useState做三种状态，分别是页面加载状态，存储电影数据，错误信息
+              利用useEffect钩子进行通过api获取数据，然后解析数据，然后在将数据存入movie变量中，过程loading为false不使用
+              定义search函数，寻找过程中将钩子loading启用，错误信息不存在，然后通过调用api将搜索相关的数据进行判断数据库那边是否回应，正确就将数据存入放入movie中呈现页面，过程不进行加载，反之加载错误信息
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+      第二种：我们利用useReducer钩子进行分发，将状态做一个整合进行分发，通过switch进行匹配调用数据，功能与第一种相似
+             但是更好用。
+      
